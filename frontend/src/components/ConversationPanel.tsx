@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { StarIcon } from '@heroicons/react/24/outline'
-import { API_ENDPOINTS } from '../config/api'
+import aiService from '../services/ai'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -14,7 +14,7 @@ interface ConversationPanelProps {
   conversationId: string | null
 }
 
-export default function ConversationPanel({ userId }: ConversationPanelProps) {
+export default function ConversationPanel({ }: ConversationPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -42,22 +42,12 @@ export default function ConversationPanel({ userId }: ConversationPanelProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch(API_ENDPOINTS.chat, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: input,
-          user_id: userId
-        })
-      })
-
-      const data = await response.json()
+      // Use client-side AI service
+      const response = await aiService.chat(input)
 
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response,
+        content: response.response,
         timestamp: new Date().toISOString()
       }
 
