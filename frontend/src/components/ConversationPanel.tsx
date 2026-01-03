@@ -16,7 +16,7 @@ interface ConversationPanelProps {
   isPreviewVisible?: boolean
 }
 
-export default function ConversationPanel({ }: ConversationPanelProps) {
+export default function ConversationPanel({ onTogglePreview, isPreviewVisible }: ConversationPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -81,6 +81,12 @@ export default function ConversationPanel({ }: ConversationPanelProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-forest-light font-medium">Alfred 1.0</h2>
           <div className="flex items-center space-x-2">
+            <button 
+              onClick={onTogglePreview}
+              className="px-3 py-1.5 text-sm text-forest-light/80 hover:text-forest-light border border-forest-light/30 rounded-lg transition-colors"
+            >
+              {isPreviewVisible ? 'Hide Preview' : 'Show Preview'}
+            </button>
             <button className="p-1 text-forest-light/60 hover:text-forest-light">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
