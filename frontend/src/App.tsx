@@ -19,7 +19,7 @@ function App() {
   })
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-forest-light">
+    <div className="flex w-screen overflow-hidden bg-forest-light" style={{ height: '100dvh' }}>
       {/* Icon Sidebar - Collapsible */}
       <div 
         className={`h-full transition-all duration-300 ease-in-out flex-shrink-0 ${
