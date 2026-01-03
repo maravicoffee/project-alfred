@@ -36,7 +36,7 @@ function App() {
       
       {/* Conversation List */}
       <div className={`transition-all duration-300 ease-in-out ${
-        isSidebarCollapsed ? 'w-64' : 'w-72'
+        isSidebarCollapsed ? 'w-56' : 'w-64'
       } bg-forest-dark border-r border-forest-darkest flex-shrink-0`}>
         <ConversationList 
           userId={userId}
@@ -56,7 +56,7 @@ function App() {
       
       {/* Right Panel - Preview (Collapsible) */}
       {isPreviewVisible && (
-        <div className="w-96 border-l border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out">
+        <div className="w-80 border-l border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out">
           <PreviewPanel onClose={() => setIsPreviewVisible(false)} />
         </div>
       )}

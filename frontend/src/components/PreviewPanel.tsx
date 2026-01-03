@@ -6,7 +6,7 @@ interface PreviewPanelProps {
 
 export default function PreviewPanel({ onClose }: PreviewPanelProps) {
   return (
-    <div className="w-96 bg-forest-light flex flex-col h-full flex-shrink-0">
+    <div className="w-full bg-forest-light flex flex-col h-full">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-3">
         <div className="flex items-center justify-between">
