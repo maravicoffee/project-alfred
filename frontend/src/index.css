@@ -1,15 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Deep Forest theme custom styles */
+/* Deep Forest theme colors using TailwindCSS v4 @theme directive */
+@theme {
+  --color-forest-darkest: #1A3A2E;
+  --color-forest-dark: #2D5F4C;
+  --color-forest-light: #E8F3ED;
+  --color-emerald: #10B981;
+  --color-gold: #F59E0B;
+}
+
+/* Base styles */
 :root {
-  --forest-darkest: #1A3A2E;
-  --forest-dark: #2D5F4C;
-  --forest-light: #E8F3ED;
-  --emerald: #10B981;
-  --gold: #F59E0B;
-  
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
