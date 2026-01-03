@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/24/solid'
-import { StarIcon } from '@heroicons/react/24/outline'
 import aiService from '../services/ai'
 
 interface Message {
@@ -137,25 +136,7 @@ export default function ConversationPanel({ onTogglePreview, isPreviewVisible }:
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Task Completed Section (if applicable) */}
-      {messages.length > 0 && (
-        <div className="px-4 py-3 bg-forest-darkest/30">
-          <div className="flex items-center space-x-2 text-emerald text-sm">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>Ready for your next request</span>
-          </div>
-          <div className="mt-2 text-forest-light/60 text-xs">
-            How was this conversation?
-            <div className="flex space-x-1 mt-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <StarIcon key={star} className="w-4 h-4 text-gold/60 hover:text-gold cursor-pointer" />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Input Area */}
       <div className="p-4 border-t border-forest-darkest/30">
