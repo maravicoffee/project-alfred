@@ -4,11 +4,20 @@
  */
 
 import React from 'react';
-import Joyride, { Step, CallBackProps, STATUS, Placement } from 'react-joyride';
+import Joyride, { STATUS } from 'react-joyride';
+import type { CallBackProps } from 'react-joyride';
+
+// Custom Step interface to avoid type conflicts with React 19
+interface TourStep {
+  target: string;
+  content: string;
+  placement?: 'top' | 'bottom' | 'left' | 'right' | 'center' | 'auto';
+  disableBeacon?: boolean;
+}
 
 interface GuidedTourProps {
   tourId: string;
-  steps: Step[];
+  steps: TourStep[];
   onComplete: () => void;
 }
 
@@ -16,7 +25,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ tourId, steps, onComplet
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
     
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as string)) {
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as any)) {
       // Mark tour as completed
       localStorage.setItem(`alfred_tour_${tourId}`, 'completed');
       onComplete();
@@ -30,7 +39,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ tourId, steps, onComplet
   
   return (
     <Joyride
-      steps={steps}
+      steps={steps as any}
       continuous
       showProgress
       showSkipButton
@@ -63,7 +72,7 @@ export const TOURS = {
       {
         target: 'body',
         content: 'Welcome to Alfred! Let me show you around.',
-        placement: 'center' as Placement,
+        placement: 'center',
         disableBeacon: true,
       },
       {
@@ -81,7 +90,7 @@ export const TOURS = {
         content: 'Use the sidebar to create new conversations, access settings, and more.',
         disableBeacon: true,
       },
-    ] as Step[],
+    ] as TourStep[],
   },
   webSearch: {
     id: 'web-search',
@@ -91,6 +100,6 @@ export const TOURS = {
         content: 'Alfred can search the web for you! Just ask a question that requires current information.',
         disableBeacon: true,
       },
-    ] as Step[],
+    ] as TourStep[],
   },
 };
