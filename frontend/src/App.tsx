@@ -8,7 +8,7 @@ import './App.css'
 function App() {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true)
-  const [isPreviewVisible, setIsPreviewVisible] = useState(true)
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false)
   const [userId] = useState<string>(() => {
     // Generate or retrieve user ID
     const stored = localStorage.getItem('alfred_user_id')
