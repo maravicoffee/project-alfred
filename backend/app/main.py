@@ -91,7 +91,7 @@ async def chat(request: ChatRequest):
     
     try:
         # Process the task through the cognitive loop
-        result = agent.process_task(request.message)
+        result = await agent.process_task(request.message)
         
         if result["status"] == "success":
             return ChatResponse(

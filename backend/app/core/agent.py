@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
+from app.services.llm import llm_service
+from app.core.tools import tool_registry
 
 
 class AgentState(Enum):
@@ -68,7 +70,7 @@ class CoreAgent:
         self.current_task: Optional[Task] = None
         self.plan: Optional[List[Dict[str, Any]]] = None
         
-    def process_task(self, user_input: str) -> Dict[str, Any]:
+    async def process_task(self, user_input: str) -> Dict[str, Any]:
         """
         Main entry point: Process a user task through the cognitive loop
         """
@@ -79,15 +81,15 @@ class CoreAgent:
         try:
             # ANALYZE: Understand the task
             self._transition_to(AgentState.ANALYZING)
-            analysis = self._analyze()
+            analysis = await self._analyze()
             
             # PLAN: Create execution plan
             self._transition_to(AgentState.PLANNING)
-            self.plan = self._plan(analysis)
+            self.plan = await self._plan(analysis)
             
             # EXECUTE: Carry out the plan
             self._transition_to(AgentState.EXECUTING)
-            execution_result = self._execute(self.plan)
+            execution_result = await self._execute(self.plan)
             
             # OBSERVE: Evaluate the result
             self._transition_to(AgentState.OBSERVING)
@@ -129,41 +131,34 @@ class CoreAgent:
         print(f"[Agent] {self.state.value} -> {new_state.value}")
         self.state = new_state
     
-    def _analyze(self) -> Dict[str, Any]:
+    async def _analyze(self) -> Dict[str, Any]:
         """
-        ANALYZE phase: Understand the user's intent and context
+        ANALYZE phase: Understand the user's intent and context using LLM
         """
         user_input = self.current_task.user_input
         context = self.world_model.get_context_summary()
         
-        # Simple analysis for now (will be enhanced with LLM in later sprints)
-        analysis = {
-            "intent": "respond_to_query",  # Placeholder
-            "entities": [],
-            "context_relevant": True,
-            "requires_tools": False,
-            "complexity": "simple"
-        }
+        # Use LLM to analyze intent
+        analysis = await llm_service.analyze_intent(user_input, context)
         
         return analysis
     
-    def _plan(self, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
+    async def _plan(self, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        PLAN phase: Create a step-by-step execution plan
+        PLAN phase: Create a step-by-step execution plan using LLM
         """
-        # Simple planning for now (will be enhanced with LLM in later sprints)
-        plan = [
-            {
-                "step": 1,
-                "action": "generate_response",
-                "tool": None,
-                "description": "Generate a response to the user"
-            }
-        ]
+        user_input = self.current_task.user_input
+        
+        # Get available tools
+        tools = tool_registry.list_tools()
+        available_tools = [t.name for t in tools]
+        
+        # Use LLM to create plan
+        plan = await llm_service.create_plan(user_input, analysis, available_tools)
         
         return plan
     
-    def _execute(self, plan: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def _execute(self, plan: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         EXECUTE phase: Carry out the plan step by step
         """
@@ -173,12 +168,53 @@ class CoreAgent:
             action = step.get("action")
             
             if action == "generate_response":
-                # Simple response generation (will be enhanced with LLM)
+                # Generate response using LLM
+                context = self.world_model.get_context_summary()
+                response_text = await llm_service.generate_response(
+                    self.current_task.user_input,
+                    context,
+                    {"previous_results": results}
+                )
                 result = {
                     "step": step["step"],
                     "success": True,
-                    "output": f"I received your message: '{self.current_task.user_input}'. I'm Alfred, and I'm here to help!"
+                    "output": response_text
                 }
+            elif action == "use_tool":
+                # Execute a tool
+                tool_name = step.get("tool")
+                tool = tool_registry.get_tool(tool_name)
+                
+                if tool:
+                    # Extract parameters
+                    params = step.get("parameters", {})
+                    if not params:
+                        # Try to extract from user input
+                        tool_metadata = tool.get_metadata()
+                        params = await llm_service.extract_tool_parameters(
+                            self.current_task.user_input,
+                            tool_name,
+                            [{
+                                "name": p.name,
+                                "type": p.type,
+                                "description": p.description
+                            } for p in tool_metadata.parameters]
+                        )
+                    
+                    # Execute tool
+                    tool_result = await tool.execute(**params)
+                    result = {
+                        "step": step["step"],
+                        "success": tool_result.get("success", False),
+                        "output": tool_result.get("output"),
+                        "tool": tool_name
+                    }
+                else:
+                    result = {
+                        "step": step["step"],
+                        "success": False,
+                        "error": f"Tool not found: {tool_name}"
+                    }
             else:
                 result = {
                     "step": step["step"],
