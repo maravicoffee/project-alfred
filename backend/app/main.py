@@ -11,13 +11,19 @@ import uuid
 
 from app.core.agent import CoreAgent
 from app.core.tools import tool_registry
+from app.core.enhanced_tools import *  # Register enhanced tools
+from app.db.supabase_client import db_client
+from app.api.conversations import router as conversations_router
 
 # Create FastAPI app
 app = FastAPI(
     title="Project Alfred API",
-    description="Next-generation AI agent API",
-    version="0.2.0"
+    description="AI Agent with cognitive loop architecture",
+    version="1.0.0"
 )
+
+# Include routers
+app.include_router(conversations_router)
 
 # Configure CORS
 app.add_middleware(
@@ -83,17 +89,40 @@ async def chat(request: ChatRequest):
     # Generate or retrieve user_id
     user_id = request.user_id or str(uuid.uuid4())
     
-    # Get or create agent for this user
+    # Ensure user exists in database
+    user = await db_client.get_user(user_id)
+    if not user:
+        await db_client.create_user(user_id)
+    
+    # Create or get agent for this user
     if user_id not in agents:
         agents[user_id] = CoreAgent(user_id=user_id)
     
     agent = agents[user_id]
     
     try:
+        # Get or create conversation
+        conversations = await db_client.get_conversations(user_id, limit=1)
+        if conversations:
+            conversation_id = conversations[0]["id"]
+        else:
+            conversation = await db_client.create_conversation(user_id, "New Chat")
+            conversation_id = conversation["id"]
+        
+        # Save user message
+        await db_client.save_message(conversation_id, "user", request.message)
+        
         # Process the task through the cognitive loop
         result = await agent.process_task(request.message)
         
         if result["status"] == "success":
+            # Save assistant response
+            await db_client.save_message(
+                conversation_id,
+                "assistant",
+                result["response"],
+                {"task_id": result["task_id"], "metadata": result["metadata"]}
+            )
             return ChatResponse(
                 status="success",
                 task_id=result["task_id"],

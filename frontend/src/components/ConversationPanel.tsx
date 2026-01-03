@@ -10,9 +10,10 @@ interface Message {
 
 interface ConversationPanelProps {
   userId: string
+  conversationId: string | null
 }
 
-export default function ConversationPanel({ userId }: ConversationPanelProps) {
+export default function ConversationPanel({ userId, conversationId }: ConversationPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
