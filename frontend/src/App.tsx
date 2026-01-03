@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
+import SharedHeader from './components/SharedHeader'
 import ConversationPanel from './components/ConversationPanel'
 import ConversationList from './components/ConversationList'
 import PreviewPanel from './components/PreviewPanel'
@@ -49,30 +50,43 @@ function App() {
         />
       </div>
       
-      {/* Main Content Area - Single panel that switches between views */}
-      <div className="flex-1 min-w-[400px] h-full overflow-hidden">
-        {currentView === 'list' ? (
-          <ConversationList 
-            userId={userId}
-            onSelectConversation={handleSelectConversation}
-            onNewChat={handleNewChat}
-          />
-        ) : (
-          <ConversationPanel 
-            userId={userId} 
-            conversationId={selectedConversation}
-            onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
-            isPreviewVisible={isPreviewVisible}
-          />
-        )}
-      </div>
-      
-      {/* Right Panel - Preview (Toggleable) */}
-      {isPreviewVisible && (
-        <div className="flex-1 min-w-[500px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
-          <PreviewPanel onClose={() => setIsPreviewVisible(false)} />
+      {/* Right Side - Header + Content Area */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Shared Header spanning across main content and preview */}
+        <SharedHeader 
+          title="Alfred 1.0"
+          isPreviewVisible={isPreviewVisible}
+          onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
+        />
+        
+        {/* Content Area - Main and Preview side by side */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Main Content Panel */}
+          <div className="flex-1 min-w-[400px] h-full overflow-hidden">
+            {currentView === 'list' ? (
+              <ConversationList 
+                userId={userId}
+                onSelectConversation={handleSelectConversation}
+                onNewChat={handleNewChat}
+              />
+            ) : (
+              <ConversationPanel 
+                userId={userId} 
+                conversationId={selectedConversation}
+                onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
+                isPreviewVisible={isPreviewVisible}
+              />
+            )}
+          </div>
+          
+          {/* Preview Panel (only when visible) */}
+          {isPreviewVisible && (
+            <div className="flex-1 min-w-[500px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
+              <PreviewPanel />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
