@@ -22,7 +22,7 @@ function App() {
     <div className="flex h-screen w-screen overflow-hidden bg-forest-light">
       {/* Icon Sidebar - Collapsible */}
       <div 
-        className={`transition-all duration-300 ease-in-out flex-shrink-0 ${
+        className={`h-full transition-all duration-300 ease-in-out flex-shrink-0 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
         }`}
         onMouseEnter={() => setIsSidebarCollapsed(false)}
