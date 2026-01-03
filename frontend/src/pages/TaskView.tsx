@@ -2,8 +2,12 @@ import { useState } from 'react'
 import ConversationPanel from '../components/ConversationPanel'
 import PreviewPanel from '../components/PreviewPanel'
 
-export default function TaskView() {
-  const [isPreviewVisible, setIsPreviewVisible] = useState(false)
+interface TaskViewProps {
+  isPreviewVisible: boolean
+  onTogglePreview: () => void
+}
+
+export default function TaskView({ isPreviewVisible, onTogglePreview }: TaskViewProps) {
   const [userId] = useState<string>(() => {
     const stored = localStorage.getItem('alfred_user_id')
     if (stored) return stored
@@ -19,7 +23,7 @@ export default function TaskView() {
         <ConversationPanel 
           userId={userId} 
           conversationId={null}
-          onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
+          onTogglePreview={onTogglePreview}
           isPreviewVisible={isPreviewVisible}
         />
       </div>

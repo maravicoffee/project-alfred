@@ -1,8 +1,12 @@
 import QuickActions from '../components/QuickActions'
 import FeatureCarousel from '../components/FeatureCarousel'
 
+interface LandingPageProps {
+  onStartTask: () => void
+}
+
 // Landing Page Component - Updated
-export default function LandingPage() {
+export default function LandingPage({ }: LandingPageProps) {
   return (
     <div className="flex-1 bg-forest-dark flex flex-col h-full">
       {/* Main Content */}

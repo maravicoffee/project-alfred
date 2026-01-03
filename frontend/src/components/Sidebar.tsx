@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -21,12 +20,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isCollapsed, onToggle, onNewChat, onShowConversations }: SidebarProps) {
-  const navigate = useNavigate()
-
-  const handleNewChat = () => {
-    navigate('/')
-    onNewChat()
-  }
 
   const icons = [
     { Icon: FolderIcon, label: 'Projects', onClick: () => {} },
@@ -64,7 +57,7 @@ export default function Sidebar({ isCollapsed, onToggle, onNewChat, onShowConver
       {/* New Chat Button */}
       <div className="px-3 mb-4">
         <button
-          onClick={handleNewChat}
+          onClick={onNewChat}
           className="flex items-center gap-3 w-full p-2 rounded-lg bg-emerald hover:bg-emerald/90 text-white transition-colors"
           aria-label="New Chat"
           title={isCollapsed ? 'New Chat' : undefined}
