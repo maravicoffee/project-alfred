@@ -10,6 +10,8 @@ from datetime import datetime
 import uuid
 from app.services.llm import llm_service
 from app.core.tools import tool_registry
+from app.core.digital_twin import digital_twin
+from app.core.proactive_engine import proactive_engine
 
 
 class AgentState(Enum):
@@ -138,8 +140,12 @@ class CoreAgent:
         user_input = self.current_task.user_input
         context = self.world_model.get_context_summary()
         
+        # Get personalized context from Digital Twin
+        personalization = proactive_engine.get_contextual_prompt_enhancement(self.user_id, user_input)
+        enhanced_context = f"{context}\n\n{personalization}" if personalization else context
+        
         # Use LLM to analyze intent
-        analysis = await llm_service.analyze_intent(user_input, context)
+        analysis = await llm_service.analyze_intent(user_input, enhanced_context)
         
         return analysis
     
@@ -234,6 +240,19 @@ class CoreAgent:
         """
         OBSERVE phase: Evaluate the execution and determine if task is complete
         """
+        # Update Digital Twin with interaction data
+        tools_used = [r.get("tool") for r in execution_result.get("results", []) if r.get("tool")]
+        interaction_data = {
+            "task_type": "general",
+            "tools_used": tools_used,
+            "topics": [],
+            "intent": "task_completion"
+        }
+        digital_twin.update_profile(self.user_id, interaction_data)
+        
+        # Generate proactive suggestions
+        suggestions = proactive_engine.generate_suggestions(self.user_id, {"current_task": self.current_task.user_input})
+        
         if execution_result.get("overall_success"):
             # Extract the response from execution results
             response = execution_result["results"][0].get("output", "Task completed successfully.")
@@ -242,7 +261,8 @@ class CoreAgent:
                 "task_complete": True,
                 "response": response,
                 "confidence": 1.0,
-                "follow_up_needed": False
+                "follow_up_needed": False,
+                "suggestions": [s.to_dict() for s in suggestions[:2]]  # Include top 2 suggestions
             }
         else:
             return {
@@ -250,5 +270,6 @@ class CoreAgent:
                 "response": "I encountered an issue while processing your request.",
                 "confidence": 0.0,
                 "follow_up_needed": True,
-                "error": "Execution failed"
+                "error": "Execution failed",
+                "suggestions": []
             }
