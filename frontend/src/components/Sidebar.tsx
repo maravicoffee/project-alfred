@@ -1,24 +1,33 @@
-import { FolderIcon, PencilIcon, MagnifyingGlassIcon, BookOpenIcon, ListBulletIcon, QuestionMarkCircleIcon, DevicePhoneMobileIcon, UserCircleIcon, ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { FolderIcon, PencilIcon, MagnifyingGlassIcon, BookOpenIcon, ListBulletIcon, QuestionMarkCircleIcon, DevicePhoneMobileIcon, UserCircleIcon, ChevronRightIcon, ChevronLeftIcon, PlusIcon } from '@heroicons/react/24/outline'
 
 interface SidebarProps {
   isCollapsed: boolean
   onToggle: () => void
+  onNewChat: () => void
+  onShowConversations: () => void
 }
 
-export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
+export default function Sidebar({ isCollapsed, onToggle, onNewChat, onShowConversations }: SidebarProps) {
   const icons = [
-    { Icon: FolderIcon, label: 'Projects' },
-    { Icon: PencilIcon, label: 'Conversations', active: true },
-    { Icon: MagnifyingGlassIcon, label: 'Search' },
-    { Icon: BookOpenIcon, label: 'Knowledge' },
-    { Icon: FolderIcon, label: 'Files' },
-    { Icon: ListBulletIcon, label: 'Tasks' },
-    { Icon: QuestionMarkCircleIcon, label: 'Help' },
-    { Icon: DevicePhoneMobileIcon, label: 'Mobile' },
+    { Icon: FolderIcon, label: 'Projects', onClick: () => {} },
+    { Icon: PencilIcon, label: 'Conversations', active: true, onClick: onShowConversations },
+    { Icon: MagnifyingGlassIcon, label: 'Search', onClick: () => {} },
+    { Icon: BookOpenIcon, label: 'Knowledge', onClick: () => {} },
+    { Icon: FolderIcon, label: 'Files', onClick: () => {} },
+    { Icon: ListBulletIcon, label: 'Tasks', onClick: () => {} },
+    { Icon: QuestionMarkCircleIcon, label: 'Help', onClick: () => {} },
+    { Icon: DevicePhoneMobileIcon, label: 'Mobile', onClick: () => {} },
   ]
 
   return (
     <div className="h-full bg-forest-darkest flex flex-col py-5 relative">
+      {/* Logo/Brand */}
+      {!isCollapsed && (
+        <div className="px-4 mb-6">
+          <h1 className="text-xl font-bold text-forest-light">Alfred 1.0</h1>
+        </div>
+      )}
+
       {/* Toggle Button */}
       <button
         onClick={onToggle}
@@ -32,11 +41,27 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         )}
       </button>
 
+      {/* New Chat Button */}
+      <div className="px-3 mb-4">
+        <button
+          onClick={onNewChat}
+          className="flex items-center gap-3 w-full p-2 rounded-lg bg-emerald hover:bg-emerald/90 text-white transition-colors"
+          aria-label="New Chat"
+          title={isCollapsed ? 'New Chat' : undefined}
+        >
+          <PlusIcon className="w-5 h-5 flex-shrink-0" />
+          {!isCollapsed && (
+            <span className="text-sm font-medium whitespace-nowrap">New Chat</span>
+          )}
+        </button>
+      </div>
+
       {/* Icons */}
       <div className="flex-1 flex flex-col space-y-2 px-3">
-        {icons.map(({ Icon, label, active }, index) => (
+        {icons.map(({ Icon, label, active, onClick }, index) => (
           <button
             key={index}
+            onClick={onClick}
             className={`flex items-center gap-3 p-2 rounded-lg transition-all duration-200 relative group ${
               active
                 ? 'text-emerald bg-forest-darkest/50'

@@ -11,9 +11,10 @@ interface Conversation {
 interface ConversationListProps {
   userId: string
   onSelectConversation: (conversationId: string) => void
+  onNewChat: () => void
 }
 
-export default function ConversationList({ userId, onSelectConversation }: ConversationListProps) {
+export default function ConversationList({ userId, onSelectConversation, onNewChat }: ConversationListProps) {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
@@ -47,6 +48,7 @@ export default function ConversationList({ userId, onSelectConversation }: Conve
     setConversations([newConvo, ...conversations])
     setSelectedId(newConvo.id)
     onSelectConversation(newConvo.id)
+    onNewChat()
   }
 
   return (
