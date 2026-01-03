@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ChatBubbleLeftIcon, PlusIcon } from '@heroicons/react/24/outline'
+import API_BASE_URL from '../config/api'
 
 interface Conversation {
   id: string
@@ -23,7 +24,7 @@ export default function ConversationList({ userId, onSelectConversation }: Conve
 
   const loadConversations = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/conversations/${userId}`)
+      const response = await fetch(`${API_BASE_URL}/conversations/${userId}`)
       if (response.ok) {
         const data = await response.json()
         setConversations(data)
@@ -37,7 +38,7 @@ export default function ConversationList({ userId, onSelectConversation }: Conve
 
   const createNewConversation = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/conversations/', {
+      const response = await fetch(`${API_BASE_URL}/conversations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, title: 'New Chat' })

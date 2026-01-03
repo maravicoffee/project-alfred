@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { StarIcon } from '@heroicons/react/24/outline'
+import { API_ENDPOINTS } from '../config/api'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -41,7 +42,7 @@ export default function ConversationPanel({ userId }: ConversationPanelProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      const response = await fetch(API_ENDPOINTS.chat, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
