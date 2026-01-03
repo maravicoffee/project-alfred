@@ -1,4 +1,17 @@
-import { FolderIcon, PencilIcon, MagnifyingGlassIcon, BookOpenIcon, ListBulletIcon, QuestionMarkCircleIcon, DevicePhoneMobileIcon, UserCircleIcon, ChevronRightIcon, ChevronLeftIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FolderIcon,
+  PencilIcon,
+  MagnifyingGlassIcon,
+  BookOpenIcon,
+  ListBulletIcon,
+  QuestionMarkCircleIcon,
+  DevicePhoneMobileIcon,
+  UserCircleIcon,
+  PlusIcon
+} from '@heroicons/react/24/outline'
 
 interface SidebarProps {
   isCollapsed: boolean
@@ -8,6 +21,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isCollapsed, onToggle, onNewChat, onShowConversations }: SidebarProps) {
+  const navigate = useNavigate()
+
+  const handleNewChat = () => {
+    navigate('/')
+    onNewChat()
+  }
+
   const icons = [
     { Icon: FolderIcon, label: 'Projects', onClick: () => {} },
     { Icon: PencilIcon, label: 'Conversations', active: true, onClick: onShowConversations },
@@ -44,7 +64,7 @@ export default function Sidebar({ isCollapsed, onToggle, onNewChat, onShowConver
       {/* New Chat Button */}
       <div className="px-3 mb-4">
         <button
-          onClick={onNewChat}
+          onClick={handleNewChat}
           className="flex items-center gap-3 w-full p-2 rounded-lg bg-emerald hover:bg-emerald/90 text-white transition-colors"
           aria-label="New Chat"
           title={isCollapsed ? 'New Chat' : undefined}

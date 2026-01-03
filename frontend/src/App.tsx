@@ -1,38 +1,18 @@
 import { useState } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import SharedHeader from './components/SharedHeader'
-import ConversationPanel from './components/ConversationPanel'
-import ConversationList from './components/ConversationList'
-import PreviewPanel from './components/PreviewPanel'
+import LandingPage from './pages/LandingPage'
+import TaskView from './pages/TaskView'
 import './App.css'
 
-function App() {
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
+function AppContent() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isPreviewVisible, setIsPreviewVisible] = useState(false)
-  const [currentView, setCurrentView] = useState<'list' | 'chat'>('chat')
-  const [userId] = useState<string>(() => {
-    // Generate or retrieve user ID
-    const stored = localStorage.getItem('alfred_user_id')
-    if (stored) return stored
-    const newId = crypto.randomUUID()
-    localStorage.setItem('alfred_user_id', newId)
-    return newId
-  })
-
-  const handleSelectConversation = (conversationId: string) => {
-    setSelectedConversation(conversationId)
-    setCurrentView('chat')
-  }
-
-  const handleNewChat = () => {
-    setSelectedConversation(null)
-    setCurrentView('chat')
-  }
-
-  const handleShowConversations = () => {
-    setCurrentView('list')
-  }
+  const location = useLocation()
+  
+  // Determine if we're on landing page or task view
+  const isLandingPage = location.pathname === '/'
 
   return (
     <div className="flex w-screen overflow-hidden bg-forest-light" style={{ height: '100dvh' }}>
@@ -45,49 +25,37 @@ function App() {
         <Sidebar 
           isCollapsed={isSidebarCollapsed} 
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          onNewChat={handleNewChat}
-          onShowConversations={handleShowConversations}
+          onNewChat={() => {}}
+          onShowConversations={() => {}}
         />
       </div>
       
       {/* Right Side - Header + Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Shared Header spanning across main content and preview */}
+        {/* Shared Header */}
         <SharedHeader 
           title="Alfred 1.0"
           isPreviewVisible={isPreviewVisible}
           onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
+          variant={isLandingPage ? 'landing' : 'task'}
         />
         
-        {/* Content Area - Main and Preview side by side */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Main Content Panel */}
-          <div className="flex-1 min-w-[400px] h-full overflow-hidden">
-            {currentView === 'list' ? (
-              <ConversationList 
-                userId={userId}
-                onSelectConversation={handleSelectConversation}
-                onNewChat={handleNewChat}
-              />
-            ) : (
-              <ConversationPanel 
-                userId={userId} 
-                conversationId={selectedConversation}
-                onTogglePreview={() => setIsPreviewVisible(!isPreviewVisible)}
-                isPreviewVisible={isPreviewVisible}
-              />
-            )}
-          </div>
-          
-          {/* Preview Panel (only when visible) */}
-          {isPreviewVisible && (
-            <div className="flex-1 min-w-[500px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
-              <PreviewPanel />
-            </div>
-          )}
-        </div>
+        {/* Content Area */}
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/task" element={<TaskView />} />
+          <Route path="/task/:id" element={<TaskView />} />
+        </Routes>
       </div>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   )
 }
 
