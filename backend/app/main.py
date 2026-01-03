@@ -15,6 +15,7 @@ from app.core.enhanced_tools import *  # Register enhanced tools
 from app.db.supabase_client import db_client
 from app.api.conversations import router as conversations_router
 from app.api.personalization import router as personalization_router
+from app.api.auth import router as auth_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -26,6 +27,7 @@ app = FastAPI(
 # Include routers
 app.include_router(conversations_router)
 app.include_router(personalization_router)
+app.include_router(auth_router)
 
 # Configure CORS
 app.add_middleware(
