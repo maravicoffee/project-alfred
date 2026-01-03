@@ -1,6 +1,7 @@
 import QuickActions from '../components/QuickActions'
 import FeatureCarousel from '../components/FeatureCarousel'
 
+// Landing Page Component - Updated
 export default function LandingPage() {
   return (
     <div className="flex-1 bg-forest-dark flex flex-col h-full">
