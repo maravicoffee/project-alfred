@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
+import Joyride, { Step, CallBackProps, STATUS, Placement } from 'react-joyride';
 
 interface GuidedTourProps {
   tourId: string;
@@ -16,7 +16,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({ tourId, steps, onComplet
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
     
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as string)) {
       // Mark tour as completed
       localStorage.setItem(`alfred_tour_${tourId}`, 'completed');
       onComplete();
@@ -63,21 +63,25 @@ export const TOURS = {
       {
         target: 'body',
         content: 'Welcome to Alfred! Let me show you around.',
-        placement: 'center',
-      } as Step,
+        placement: 'center' as Placement,
+        disableBeacon: true,
+      },
       {
         target: '.conversation-input',
         content: 'This is where you chat with Alfred. Just type your message and press Enter.',
-      } as Step,
+        disableBeacon: true,
+      },
       {
         target: '.conversation-list',
         content: 'All your conversations are saved here. You can switch between them anytime.',
-      } as Step,
+        disableBeacon: true,
+      },
       {
         target: '.sidebar',
         content: 'Use the sidebar to create new conversations, access settings, and more.',
-      } as Step,
-    ],
+        disableBeacon: true,
+      },
+    ] as Step[],
   },
   webSearch: {
     id: 'web-search',
@@ -85,7 +89,8 @@ export const TOURS = {
       {
         target: '.tool-web-search',
         content: 'Alfred can search the web for you! Just ask a question that requires current information.',
-      } as Step,
-    ],
+        disableBeacon: true,
+      },
+    ] as Step[],
   },
 };
