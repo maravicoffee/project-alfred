@@ -69,7 +69,7 @@ function App() {
       
       {/* Right Panel - Preview (Toggleable) */}
       {isPreviewVisible && (
-        <div className="flex-1 min-w-[400px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
+        <div className="flex-1 min-w-[500px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
           <PreviewPanel onClose={() => setIsPreviewVisible(false)} />
         </div>
       )}
