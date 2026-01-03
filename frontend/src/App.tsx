@@ -50,7 +50,7 @@ function App() {
       </div>
       
       {/* Main Content Area - Single panel that switches between views */}
-      <div className="flex-1 max-w-4xl min-w-0 h-full overflow-hidden">
+      <div className="flex-1 min-w-[400px] max-w-[600px] h-full overflow-hidden">
         {currentView === 'list' ? (
           <ConversationList 
             userId={userId}
@@ -69,7 +69,7 @@ function App() {
       
       {/* Right Panel - Preview (Toggleable) */}
       {isPreviewVisible && (
-        <div className="flex-1 min-w-[300px] max-w-md border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
+        <div className="flex-1 min-w-[400px] border-l border-gray-200 h-full overflow-hidden transition-all duration-300 ease-in-out">
           <PreviewPanel onClose={() => setIsPreviewVisible(false)} />
         </div>
       )}
