@@ -63,20 +63,20 @@ export const TOURS = {
       {
         target: 'body',
         content: 'Welcome to Alfred! Let me show you around.',
-        placement: 'center' as const,
-      },
+        placement: 'center',
+      } as Step,
       {
         target: '.conversation-input',
         content: 'This is where you chat with Alfred. Just type your message and press Enter.',
-      },
+      } as Step,
       {
         target: '.conversation-list',
         content: 'All your conversations are saved here. You can switch between them anytime.',
-      },
+      } as Step,
       {
         target: '.sidebar',
         content: 'Use the sidebar to create new conversations, access settings, and more.',
-      },
+      } as Step,
     ],
   },
   webSearch: {
@@ -85,7 +85,7 @@ export const TOURS = {
       {
         target: '.tool-web-search',
         content: 'Alfred can search the web for you! Just ask a question that requires current information.',
-      },
+      } as Step,
     ],
   },
 };
