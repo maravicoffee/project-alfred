@@ -39,28 +39,27 @@ class WebSearchTool(Tool):
     
     async def execute(self, query: str, num_results: int = 5) -> Dict[str, Any]:
         """
-        Execute web search
-        For now, returns simulated results. In production, would use a search API.
+        Execute web search using DuckDuckGo
         """
         try:
-            # Simulated search results
-            results = [
-                {
-                    "title": f"Result {i+1} for '{query}'",
-                    "url": f"https://example.com/result-{i+1}",
-                    "snippet": f"This is a relevant result about {query}. It contains useful information that answers the user's question."
-                }
-                for i in range(min(num_results, 5))
-            ]
+            from app.services.web_search import web_search_service
             
-            return {
-                "success": True,
-                "output": {
-                    "query": query,
-                    "results": results,
-                    "total_results": len(results)
+            result = web_search_service.search(query, max_results=num_results)
+            
+            if result["success"]:
+                return {
+                    "success": True,
+                    "output": {
+                        "query": query,
+                        "results": result["results"],
+                        "total_results": len(result["results"])
+                    }
                 }
-            }
+            else:
+                return {
+                    "success": False,
+                    "error": result.get("error", "Search failed")
+                }
         except Exception as e:
             return {
                 "success": False,
