@@ -50,7 +50,7 @@ function App() {
       </div>
       
       {/* Main Content Area - Single panel that switches between views */}
-      <div className="flex-1 min-w-[400px] max-w-[600px] h-full overflow-hidden">
+      <div className="flex-1 min-w-[400px] h-full overflow-hidden">
         {currentView === 'list' ? (
           <ConversationList 
             userId={userId}
