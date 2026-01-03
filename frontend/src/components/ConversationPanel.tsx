@@ -75,7 +75,7 @@ export default function ConversationPanel({ }: ConversationPanelProps) {
   }
 
   return (
-    <div className="w-[400px] bg-forest-dark flex flex-col">
+    <div className="flex-1 bg-forest-dark flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-forest-darkest/30">
         <div className="flex items-center justify-between">
