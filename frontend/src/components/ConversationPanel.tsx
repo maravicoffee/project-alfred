@@ -12,6 +12,8 @@ interface Message {
 interface ConversationPanelProps {
   userId: string
   conversationId: string | null
+  onTogglePreview?: () => void
+  isPreviewVisible?: boolean
 }
 
 export default function ConversationPanel({ }: ConversationPanelProps) {
